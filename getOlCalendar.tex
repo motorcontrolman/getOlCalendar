@@ -249,12 +249,13 @@ for i=1:NavGroup.NavigationFolders.Count
     LST.Sort('[Start]');
     LST_Restrict = LST.Restrict(filter{1});
     Cnt = LST_Restrict.Count;
-    sz = [Cnt 3];
-    varNames = {'Subject','Start','End'};
-    varTypes = {'string','datetime','datetime'};
+    sz = [Cnt 4];
+    varNames = {'Subject','Location','Start','End'};
+    varTypes = {'string','string','datetime','datetime'};
     Calendar_Table = table('Size',sz,'VariableTypes',varTypes,'VariableNames',varNames);
     for j = 1:Cnt
         Calendar_Table.Subject(j) = LST_Restrict.Item(j).Subject;
+        Calendar_Table.Location(j) = LST_Restrict.Item(j).Location;
         Calendar_Table.Start(j) = LST_Restrict.Item(j).Start;
         Calendar_Table.End(j) = LST_Restrict.Item(j).End;
     end
@@ -264,14 +265,14 @@ Calendar_Table
 \end{matlabcode}
 \begin{matlabtableoutput}
 {
-\begin{tabular} {|c|c|c|c|}\hline
-\mlcell{ } & \mlcell{Subject} & \mlcell{Start} & \mlcell{End} \\ \hline
-\mlcell{1} & \mlcell{"家族と朝ごはん"} & \mlcell{2020/02/05 08:00:00} & \mlcell{2020/02/05 09:00:00} \\ \hline
-\mlcell{2} & \mlcell{"通勤"} & \mlcell{2020/02/05 09:00:00} & \mlcell{2020/02/05 10:00:00} \\ \hline
-\mlcell{3} & \mlcell{"朝礼"} & \mlcell{2020/02/05 10:00:00} & \mlcell{2020/02/05 11:00:00} \\ \hline
-\mlcell{4} & \mlcell{"家族会議"} & \mlcell{2020/02/06 08:00:00} & \mlcell{2020/02/06 09:30:00} \\ \hline
-\mlcell{5} & \mlcell{"通勤"} & \mlcell{2020/02/06 09:30:00} & \mlcell{2020/02/06 10:30:00} \\ \hline
-\mlcell{6} & \mlcell{"労使交渉"} & \mlcell{2020/02/06 10:30:00} & \mlcell{2020/02/06 12:00:00} \\ 
+\begin{tabular} {|c|c|c|c|c|}\hline
+\mlcell{ } & \mlcell{Subject} & \mlcell{Location} & \mlcell{Start} & \mlcell{End} \\ \hline
+\mlcell{1} & \mlcell{"家族と朝ごはん"} & \mlcell{"自宅"} & \mlcell{2020/02/05 08:00:00} & \mlcell{2020/02/05 09:00:00} \\ \hline
+\mlcell{2} & \mlcell{"通勤"} & \mlcell{"移動"} & \mlcell{2020/02/05 09:00:00} & \mlcell{2020/02/05 10:00:00} \\ \hline
+\mlcell{3} & \mlcell{"朝礼"} & \mlcell{"会社、部長机前"} & \mlcell{2020/02/05 10:00:00} & \mlcell{2020/02/05 11:00:00} \\ \hline
+\mlcell{4} & \mlcell{"家族会議"} & \mlcell{"自宅、リビング"} & \mlcell{2020/02/06 08:00:00} & \mlcell{2020/02/06 09:30:00} \\ \hline
+\mlcell{5} & \mlcell{"通勤"} & \mlcell{"移動"} & \mlcell{2020/02/06 09:30:00} & \mlcell{2020/02/06 10:30:00} \\ \hline
+\mlcell{6} & \mlcell{"労使交渉"} & \mlcell{"会社、ホール"} & \mlcell{2020/02/06 10:30:00} & \mlcell{2020/02/06 12:00:00} \\ 
 \hline
 \end{tabular}
 }
@@ -294,7 +295,7 @@ Calendar_Table
 
 \begin{par}
 \begin{flushleft}
-MATLABさんは気が利いているので、下記にて簡単に計算可能です。
+予定の長さは、forループ中において `LST\_Restrict.Item(j).Duration` で取り出せますが、MATLABのテーブル型の便利さを示すためにあえてテーブル内で計算させます。コードは下記。
 \end{flushleft}
 \end{par}
 
@@ -303,14 +304,14 @@ Calendar_Table.Duration = Calendar_Table.End - Calendar_Table.Start
 \end{matlabcode}
 \begin{matlabtableoutput}
 {
-\begin{tabular} {|c|c|c|c|c|}\hline
-\mlcell{ } & \mlcell{Subject} & \mlcell{Start} & \mlcell{End} & \mlcell{Duration} \\ \hline
-\mlcell{1} & \mlcell{"家族と朝ごはん"} & \mlcell{2020/02/05 08:00:00} & \mlcell{2020/02/05 09:00:00} & \mlcell{01:00:00} \\ \hline
-\mlcell{2} & \mlcell{"通勤"} & \mlcell{2020/02/05 09:00:00} & \mlcell{2020/02/05 10:00:00} & \mlcell{01:00:00} \\ \hline
-\mlcell{3} & \mlcell{"朝礼"} & \mlcell{2020/02/05 10:00:00} & \mlcell{2020/02/05 11:00:00} & \mlcell{01:00:00} \\ \hline
-\mlcell{4} & \mlcell{"家族会議"} & \mlcell{2020/02/06 08:00:00} & \mlcell{2020/02/06 09:30:00} & \mlcell{01:30:00} \\ \hline
-\mlcell{5} & \mlcell{"通勤"} & \mlcell{2020/02/06 09:30:00} & \mlcell{2020/02/06 10:30:00} & \mlcell{01:00:00} \\ \hline
-\mlcell{6} & \mlcell{"労使交渉"} & \mlcell{2020/02/06 10:30:00} & \mlcell{2020/02/06 12:00:00} & \mlcell{01:30:00} \\ 
+\begin{tabular} {|c|c|c|c|c|c|}\hline
+\mlcell{ } & \mlcell{Subject} & \mlcell{Location} & \mlcell{Start} & \mlcell{End} & \mlcell{Duration} \\ \hline
+\mlcell{1} & \mlcell{"家族と朝ごはん"} & \mlcell{"自宅"} & \mlcell{2020/02/05 08:00:00} & \mlcell{2020/02/05 09:00:00} & \mlcell{01:00:00} \\ \hline
+\mlcell{2} & \mlcell{"通勤"} & \mlcell{"移動"} & \mlcell{2020/02/05 09:00:00} & \mlcell{2020/02/05 10:00:00} & \mlcell{01:00:00} \\ \hline
+\mlcell{3} & \mlcell{"朝礼"} & \mlcell{"会社、部長机前"} & \mlcell{2020/02/05 10:00:00} & \mlcell{2020/02/05 11:00:00} & \mlcell{01:00:00} \\ \hline
+\mlcell{4} & \mlcell{"家族会議"} & \mlcell{"自宅、リビング"} & \mlcell{2020/02/06 08:00:00} & \mlcell{2020/02/06 09:30:00} & \mlcell{01:30:00} \\ \hline
+\mlcell{5} & \mlcell{"通勤"} & \mlcell{"移動"} & \mlcell{2020/02/06 09:30:00} & \mlcell{2020/02/06 10:30:00} & \mlcell{01:00:00} \\ \hline
+\mlcell{6} & \mlcell{"労使交渉"} & \mlcell{"会社、ホール"} & \mlcell{2020/02/06 10:30:00} & \mlcell{2020/02/06 12:00:00} & \mlcell{01:30:00} \\ 
 \hline
 \end{tabular}
 }
@@ -318,7 +319,57 @@ Calendar_Table.Duration = Calendar_Table.End - Calendar_Table.Start
 
 \begin{par}
 \begin{flushleft}
-今回はここまで！
+便利だなぁ(恍惚)
+\end{flushleft}
+\end{par}
+
+
+\matlabheading{5.負荷を見える化する}
+
+\begin{par}
+\begin{flushleft}
+最終ゴールはSubjectからテキストディープラーニングで業務内容を類推、業務負荷を見える化することです。が、今回はLocationを用いてどこにどれだけいたのかを見える化するに留めます。テキストディープラーニング色々大変そうなので。
+\end{flushleft}
+\end{par}
+
+\begin{par}
+\begin{flushleft}
+Locationにはあらかじめ自宅、会社、移動のいずれかを含むようにしておいたので、\href{https://jp.mathworks.com/help/matlab/ref/contains.html}{contains関数}を使ってデータ整理して行きます。
+\end{flushleft}
+\end{par}
+
+\begin{matlabcode}
+Location_Name = ["自宅";"会社";"移動"];
+Result_Table = table(Location_Name);
+Duration_sum = [];
+for k = 1:length(Result_Table.Location_Name)
+    tmp = contains(Calendar_Table.Location , Result_Table.Location_Name(k)) .* Calendar_Table.Duration;
+    Duration_sum = [Duration_sum; sum(tmp)];
+end
+
+Result_Table = table(Location_Name, Duration_sum)
+\end{matlabcode}
+\begin{matlabtableoutput}
+{
+\begin{tabular} {|c|c|c|}\hline
+\mlcell{ } & \mlcell{Location\_Name} & \mlcell{Duration\_sum} \\ \hline
+\mlcell{1} & \mlcell{"自宅"} & \mlcell{02:30:00} \\ \hline
+\mlcell{2} & \mlcell{"会社"} & \mlcell{02:30:00} \\ \hline
+\mlcell{3} & \mlcell{"移動"} & \mlcell{02:00:00} \\ 
+\hline
+\end{tabular}
+}
+\end{matlabtableoutput}
+\begin{matlabcode}
+pie(hours(Result_Table.Duration_sum), Result_Table.Location_Name);
+\end{matlabcode}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_0.png}
+\end{center}
+
+\begin{par}
+\begin{flushleft}
+これは…あんまり働かない人ですね。
 \end{flushleft}
 \end{par}
 
